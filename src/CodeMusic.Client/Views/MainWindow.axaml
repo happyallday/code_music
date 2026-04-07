@@ -1,0 +1,141 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CodeMusic.Client.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="CodeMusic.Client.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="CodeMusic - 在线音乐播放器"
+        Width="800" Height="600"
+        MinWidth="600" MinHeight="400">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        <!-- 搜索栏 -->
+        <Border Grid.Row="0" Background="#1E1E1E" Padding="16">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0" 
+                         Text="{Binding SearchText}"
+                         Watermark="搜索歌曲..."
+                         VerticalContentAlignment="Center"
+                         FontSize="16"
+                         Padding="12,8"
+                         Margin="0,0,8,0"/>
+                <Button Grid.Column="1" 
+                        Content="搜索" 
+                        Command="{Binding SearchCommand}"
+                        Padding="24,8"
+                        Background="#1DB954"
+                        Foreground="White"
+                        FontSize="14"/>
+            </Grid>
+        </Border>
+
+        <!-- 歌曲列表 -->
+        <Border Grid.Row="1" Background="#121212">
+            <Grid RowDefinitions="Auto,*">
+                <Border Grid.Row="0" Background="#181818" Padding="16,12">
+                    <TextBlock Text="歌曲列表" Foreground="#B3B3B3" FontSize="14" FontWeight="SemiBold"/>
+                </Border>
+                
+                <ListBox Grid.Row="1" 
+                         ItemsSource="{Binding Songs}"
+                         SelectedItem="{Binding SelectedSong}"
+                         Background="Transparent"
+                         Padding="8">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" Margin="8,4">
+                                <TextBlock Grid.Column="0" Text="{Binding Id}" 
+                                           Foreground="#B3B3B3" 
+                                           VerticalAlignment="Center" 
+                                           Width="40"/>
+                                <StackPanel Grid.Column="1" Margin="12,0">
+                                    <TextBlock Text="{Binding Name}" 
+                                               Foreground="White" 
+                                               FontSize="14"
+                                               TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding Singer}" 
+                                               Foreground="#B3B3B3" 
+                                               FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" 
+                                           Text="{Binding Source}" 
+                                           Foreground="#1DB954" 
+                                           VerticalAlignment="Center"
+                                           Margin="12,0"/>
+                                <TextBlock Grid.Column="3" 
+                                           Text="{Binding Quality}" 
+                                           Foreground="#B3B3B3" 
+                                           VerticalAlignment="Center"
+                                           Width="80"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!-- 播放控制 -->
+        <Border Grid.Row="2" Background="#181818" Padding="16,12">
+            <Grid RowDefinitions="Auto,Auto">
+                <!-- 进度条 -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,8">
+                    <TextBlock Grid.Column="0" Text="{Binding CurrentPosition}" 
+                               Foreground="#B3B3B3" VerticalAlignment="Center" Width="50"/>
+                    <Slider Grid.Column="1" 
+                            Minimum="0" Maximum="100"
+                            Value="{Binding Progress}"
+                            Margin="8,0"
+                            IsEnabled="{Binding IsPlaying}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding TotalDuration}" 
+                               Foreground="#B3B3B3" VerticalAlignment="Center" Width="50"/>
+                </Grid>
+                
+                <!-- 控制按钮 -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto,*,Auto">
+                    <Button Grid.Column="0" Content="⏮" 
+                            Command="{Binding PlaySongCommand}"
+                            Padding="12,8" Margin="0,0,8,0"
+                            Background="Transparent"/>
+                    <Button Grid.Column="1" 
+                            Content="{Binding PlayPauseIcon}"
+                            Command="{Binding TogglePlayPauseCommand}"
+                            Padding="16,8" Margin="0,0,8,0"
+                            Background="#1DB954"
+                            Foreground="White"/>
+                    <Button Grid.Column="2" Content="⏹" 
+                            Command="{Binding StopCommand}"
+                            Padding="12,8" Margin="0,0,8,0"
+                            Background="Transparent"/>
+                    
+                    <!-- 音量控制 -->
+                    <StackPanel Grid.Column="4" Orientation="Horizontal">
+                        <TextBlock Text="🔊" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Slider Minimum="0" Maximum="100"
+                                Value="{Binding Volume}"
+                                Width="100"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 状态栏 -->
+        <Border Grid.Row="3" Background="#1E1E1E" Padding="16,8">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" 
+                           Foreground="#B3B3B3" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" 
+                        Content="下载当前歌曲"
+                        Command="{Binding DownloadSongCommand}"
+                        Padding="16,6"
+                        Background="#1DB954"
+                        Foreground="White"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
